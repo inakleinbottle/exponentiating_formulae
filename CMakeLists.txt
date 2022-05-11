@@ -7,4 +7,6 @@ add_subdirectory(libalgebra)
 
 
 add_executable(exponentiating_formulae main.cpp)
-target_link_libraries(exponentiating_formulae PUBLIC Libalgebra::Libalgebra)
+target_link_libraries(exponentiating_formulae PUBLIC
+        Libalgebra::Libalgebra
+        )

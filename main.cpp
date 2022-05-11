@@ -1,8 +1,8 @@
 #include <iostream>
 
+#include <libalgebra/coefficients/rational_coefficients.h>
 #include <libalgebra/libalgebra.h>
 #include <libalgebra/coefficients/coefficients.h>
-#include <libalgebra/coefficients/rational_coefficients.h>
 
 using namespace alg;
 
@@ -19,8 +19,8 @@ struct Environment {
     lie_basis_t lbasis;
     static constexpr DEG poly_width = hall_basis<WIDTH, DEPTH>::start_of_degree(DEPTH+1);
 
-    using poly_t = alg::multi_polynomial<scalar_field, poly_width, POLY_DEPTH>;
-    using poly_coeffs = coefficients::coefficient_ring<poly_t, poly_t>;
+    using poly_t = alg::poly<scalar_field>;
+    using poly_coeffs = coefficients::coefficient_ring<poly_t, typename scalar_field::Q>;
 
     using LIE = alg::lie<poly_coeffs, WIDTH, DEPTH, vectors::dense_vector>;
     using TENSOR = alg::free_tensor<poly_coeffs, WIDTH, DEPTH, vectors::dense_vector>;
@@ -28,6 +28,8 @@ struct Environment {
     using MAPS = maps<poly_coeffs, WIDTH, DEPTH, TENSOR, LIE>;
     using CBH = cbh<poly_coeffs, WIDTH, DEPTH, TENSOR, LIE>;
 
+    MAPS maps_;
+    CBH cbh_;
 
     LIE generic_lie() const
     {
@@ -46,6 +48,12 @@ struct Environment {
 
 int main()
 {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    Environment env;
+    auto glie = env.generic_lie();
+
+
+    auto tensor = exp(env.maps_.l2t(glie));
+
+
+    std::cout << tensor << '\n';
 }
