@@ -27,7 +27,7 @@ jobs:
       id: boost-windows
       shell: bash
       run: |
-        vcpkg fetch nuget | tail -n 1 \
+        `vcpkg fetch nuget | tail -n 1` \
           sources add \
           -source "https://nuget.pkg.github.com/inakleinbottle/index.json" \
           -storepasswordincleartext \
