@@ -44,7 +44,7 @@ jobs:
       id: boost-windows
       shell: bash
       run: |
-        ./vcpkg/vcpkg install boost-system boost-thread --triplet x64-windows
+        ./vcpkg/vcpkg install boost-system boost-thread boost-multiprecision --triplet x64-windows
         
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
