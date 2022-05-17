@@ -23,10 +23,15 @@ jobs:
       with:
         submodules: true
         
-    - name: Get Boost Windows
-      id: boost-windows
-      shell: bash
+    - uses: actions/checkout@v3
+      with:
+        repository: "https://github.com/microsoft/vcpkg.git"
+        path: vcpkg
+        
+    - shell: bash
       run: |
+        rm -rf "$VCPKG_INSTALLATION_ROOT"
+        ./vcpkg/bootstrap-vcpkg.sh
         `vcpkg fetch nuget | tail -n 1` \
           sources add \
           -source "https://nuget.pkg.github.com/inakleinbottle/index.json" \
@@ -34,6 +39,11 @@ jobs:
           -name "GitHub" \
           -username "inakleinbottle" \
           -password "${{ secrets.GITHUB_TOKEN }}"
+          
+    - name: Get Boost Windows
+      id: boost-windows
+      shell: bash
+      run: |
         vcpkg install boost-system boost-thread --triplet x64-windows
         
     - name: Configure CMake
