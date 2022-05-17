@@ -27,6 +27,13 @@ jobs:
       id: boost-windows
       shell: bash
       run: |
+        vcpkg fetch nuget | tail -n 1 \
+          sources add \
+          -source "https://nuget.pkg.github.com/inakleinbottle/index.json" \
+          -storepasswordincleartext \
+          -name "GitHub" \
+          -username "inakleinbottle" \
+          -password "${{ secrets.GITHUB_TOKEN }}"
         vcpkg install boost-system boost-thread --triplet x64-windows
         
     - name: Configure CMake
