@@ -32,7 +32,7 @@ jobs:
       run: |
         rm -rf "$VCPKG_INSTALLATION_ROOT"
         ./vcpkg/bootstrap-vcpkg.sh
-        `.vcpkg/vcpkg fetch nuget | tail -n 1` \
+        ./vcpkg/vcpkg fetch nuget | tail -n 1` \
           sources add \
           -source "https://nuget.pkg.github.com/inakleinbottle/index.json" \
           -storepasswordincleartext \
