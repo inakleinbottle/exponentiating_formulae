@@ -77,6 +77,7 @@ int main()
 	using STENSOR = Environment::SHUFFLE_TENSOR;
 	using TENSOR = Environment::TENSOR;
 	using S = Environment::S;
+	using poly_t = Environment::poly_t;
 
 	auto k = Environment::K;
 
