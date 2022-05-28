@@ -51,11 +51,12 @@ void multiply_into_impl(
     alg::vectors::vector<Basis, Coeffs, ArgVector, ArgArgs...> tmp;
     mpl.multiply_and_add(tmp, lhs, rhs, op);
 
-    // This is slow, but at the moment it is the only way add different vector
-    // types.
-    result.add_scal_prod(r.key(), r.value());
+    //// This is slow, but at the moment it is the only way add different vector
+    //// types.
+    //result.add_scal_prod(r.key(), r.value());
 
 }
+
 
 
 
