@@ -62,7 +62,7 @@ struct Environment {
         return result;
     }
 
-    static typename poly_coeffs::S K(SHUFFLE_TENSOR& functional, const TENSOR& sig_data) {
+    static typename poly_coeffs::S K(const SHUFFLE_TENSOR& functional, const TENSOR& sig_data) {
         SHUFFLE_TENSOR_OVER_POLYS functional_p;
         for (auto key_value : functional)
             functional_p.add_scal_prod(key_value.key(),typename poly_coeffs::S(key_value.value()));
