@@ -61,11 +61,13 @@ struct Environment {
 		return result;
 	}
 
+	/// The bilinear function K takes a shuffle and contracts it with a tensor to produce a scalar.
+	/// In this case the scalar is itself a polynomial 
 	static typename poly_coeffs::S K(const SHUFFLE_TENSOR& functional, const TENSOR& sig_data) {
 		SHUFFLE_TENSOR_OVER_POLYS functional_p;
-		for (auto key_value : functional)
+		for (auto& key_value : functional)
 			functional_p.add_scal_prod(key_value.key(), typename poly_coeffs::S(key_value.value()));
-		inner_product f(sig_data);
+		inner_product f(sig_data);//todo: left and right switched here?
 		return f(functional_p);
 	}
 };
