@@ -5,7 +5,7 @@
 **/out/
 **/build/
 CMakeSettings.json
-
+CMakeUserPresets.json
 # User-specific files
 *.rsuser
 *.suo
