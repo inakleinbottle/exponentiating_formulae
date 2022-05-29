@@ -1,6 +1,6 @@
 #include "environment.h"
 
-
+int cbh_formula();
 int main()
 {
 	// give simplified names and access to the objects defined in Environment
@@ -60,4 +60,6 @@ int main()
 		<< k(STENSOR(x), sig) << "\n";
 
 	std::cout << "\n\n";
+
+	 cbh_formula();
 }
