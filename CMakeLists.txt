@@ -9,6 +9,7 @@ add_subdirectory(libalgebra)
 add_executable(
   exponentiating_formulae
   main.cpp
+  "environment.h"
   "headers/libalgebra/alternative_multiplications.h"
   "headers/libalgebra/area_tensor_basis.h"
   "headers/libalgebra/area_tensor_multiplication.h"
