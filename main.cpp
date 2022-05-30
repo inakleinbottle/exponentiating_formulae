@@ -1,6 +1,8 @@
 #include "environment.h"
 
 int cbh_formula();
+int danyu();
+
 int main()
 {
 	// give simplified names and access to the objects defined in Environment
@@ -61,5 +63,6 @@ int main()
 
 	std::cout << "\n\n";
 
-	 cbh_formula();
+	cbh_formula();
+    danyu();
 }
