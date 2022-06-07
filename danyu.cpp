@@ -34,23 +34,28 @@ int danyu()
     Environment env;
     const auto& sbasis = env.sbasis;
 
-    LIE glie1 = env.generic_lie(100);
-    LIE glie2 = env.generic_lie(200);
-    TENSOR L1 = env.maps_.l2t(glie1);
-    TENSOR L2 = env.maps_.l2t(glie2);
-    LIE logsig = env.maps_.t2l(log(exp(L1) * exp(L2)));
+    LIE logsig_before = env.generic_lie(100);
+    TENSOR tensor_logsig_before = env.maps_.l2t(logsig_before);
+    TENSOR sig_before = exp(tensor_logsig_before);
+
+    LIE logsig_during = env.generic_lie(200);
+    TENSOR tensor_logsig_during = env.maps_.l2t(logsig_during);
+    TENSOR sig_during = exp(tensor_logsig_during);
+
+    LIE logsig_after = env.generic_lie(300);
+    TENSOR tensor_logsig_after = env.maps_.l2t(logsig_after);
+    TENSOR sig_after = exp(tensor_logsig_after);
+
+    TENSOR sig = sig_before * sig_during * sig_after;
+    TENSOR tensor_logsig = log(sig);
+    LIE logsig = env.maps_.t2l(tensor_logsig);
 
     std::cout << "\n\n";
-    std::cout << "The generic lie elements:\n";
+    std::cout << "The generic logsig of the triple:\n";
     for (auto& x : env.lbasis.iterate_keys())
-        std::cout << LIE(x) << "\t"
-                  << glie1[x] << "\t" << glie2[x] << "\n";
-    std::cout << "\n\n";
-
-    std::cout << "\n\n";
-    std::cout << "The composition of two generic lie elements via cbh:\n";
-    for (auto& x : env.lbasis.iterate_keys())
-        std::cout << LIE(x) * logsig[x] << "\n";
+        std::cout << "(" << std::pair<Environment::lie_basis_t*, alg::LET>(&env.lbasis, x) << ")"
+                  << ":\t   "
+                  << logsig[x] << "\n \n";
     std::cout << "\n\n";
 
     return 0;
