@@ -46,7 +46,7 @@ int danyu()
     TENSOR tensor_logsig_after = env.maps_.l2t(logsig_after);
     TENSOR sig_after = exp(tensor_logsig_after);
 
-    TENSOR sig = sig_before * sig_during * sig_after;
+    TENSOR sig = antipode(sig_before * sig_during * sig_after) * sig_before * sig_during * sig_after;
     TENSOR tensor_logsig = log(sig);
     LIE logsig = env.maps_.t2l(tensor_logsig);
 
