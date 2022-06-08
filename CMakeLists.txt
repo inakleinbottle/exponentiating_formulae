@@ -11,12 +11,7 @@ add_executable(
   main.cpp
   "cbh_formulae.cpp"
   "environment.h"
-  "headers/libalgebra/alternative_multiplications.h"
-  "headers/libalgebra/area_tensor_basis.h"
-  "headers/libalgebra/area_tensor_multiplication.h"
-  "headers/libalgebra/half_shuffle_tensor_basis.h"
-  "headers/libalgebra/half_shuffle_tensor_multiplication.h" 
   "danyu.cpp")
-target_include_directories(exponentiating_formulae PRIVATE headers)
+#target_include_directories(exponentiating_formulae PRIVATE headers)
 target_link_libraries(exponentiating_formulae PUBLIC Libalgebra::Libalgebra)
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT exponentiating_formulae)

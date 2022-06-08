@@ -3,18 +3,7 @@
 #include <iostream>
 #include <functional>
 
-#include <libalgebra/coefficients/rational_coefficients.h>
 #include <libalgebra/libalgebra.h>
-#include <libalgebra/coefficients/coefficients.h>
-#include <libalgebra/operators/functionals.h>
-
-namespace alg {
-#include "libalgebra/half_shuffle_tensor_basis.h"
-#include "libalgebra/half_shuffle_tensor_multiplication.h"
-#include "libalgebra/area_tensor_basis.h"
-#include "libalgebra/area_tensor_multiplication.h"
-#include "libalgebra/alternative_multiplications.h"
-};
 
 using namespace alg;
 
