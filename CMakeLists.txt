@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(exponentiating_formulae)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(Boost_NO_WARN_NEW_VERSIONS 1)
 add_subdirectory(libalgebra)
 
