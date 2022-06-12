@@ -1,5 +1,6 @@
 #include "environment.h"
 
+int forward_transformer();
 int cbh_formula();
 int danyu();
 
@@ -67,6 +68,7 @@ int main()
 
 	std::cout << "\n\n";
 
-	cbh_formula();
-    danyu();
+	//cbh_formula();
+    //danyu();
+    forward_transformer();
 }
