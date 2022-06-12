@@ -9,11 +9,8 @@
 
 using namespace alg;
 
-constexpr DEG WIDTH = 3;
-constexpr DEG DEPTH = 3; // For testing, to keep things small enough to run at home
-
-
-struct Environment {
+template< DEG WIDTH, DEG DEPTH>
+	struct Environment {
 	using scalar_field = coefficients::rational_field;
 	using S = typename scalar_field::S;
 

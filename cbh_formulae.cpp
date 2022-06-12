@@ -6,8 +6,14 @@
 // Returns:   int
 // Qualifier:
 //************************************
+
+constexpr DEG WIDTH = 3;
+constexpr DEG DEPTH = 3;
+
+	
 int cbh_formula()
 {
+    using Environment = Environment<WIDTH,DEPTH>;
     // give simplified names and access to the objects defined in Environment
     using LIE = Environment::LIE;
     using STENSOR = Environment::SHUFFLE_TENSOR;

@@ -1,8 +1,11 @@
 #include "environment.h"
 #include <array>
+constexpr DEG WIDTH = 3;
+constexpr DEG DEPTH = 3;
 
-int danyu2()
+    int danyu2()
 {
+    using Environment = Environment<WIDTH, DEPTH>;
     /*
     w1,w2,...wk, and a signature S_[0,t] 
     then we can define a new path 
@@ -62,13 +65,14 @@ int danyu2()
     return 0;
 }
 
-Environment::TENSOR apply(const std::map<Environment::TENSOR::BASIS::KEY, Environment::SHUFFLE_TENSOR>& result, const Environment::TENSOR& in)
+    template <class Environment>
+typename Environment::TENSOR apply(const std::map<typename Environment::TENSOR::BASIS::KEY, typename Environment::SHUFFLE_TENSOR>& result, const typename Environment::TENSOR& in)
 {
-    Environment::TENSOR out;
+    typename Environment::TENSOR out;
     for (const auto & x: result) {
         auto& key = x.first;
         auto& tvalue = x.second;
-        out[key] = Environment::K(tvalue, in);
+        out[key] = typename  Environment::K(tvalue, in);
     };
 
     return out;
@@ -88,6 +92,7 @@ Environment::TENSOR apply(const std::map<Environment::TENSOR::BASIS::KEY, Enviro
 
 int danyu()
 {
+        using Environment = Environment<WIDTH, DEPTH>;
     /*
     w1,w2,...wk, and a signature S_[0,t] 
     then we can define a new path 
@@ -169,7 +174,7 @@ int danyu()
 
     for (auto& u : result) std::cout << STENSOR(u.first, poly_t(S(1))) << " " << u.second << "\n";
     std::cout << "Basic tests finished\n\n";
-    TENSOR ans = ::apply(result, sig); 
+    TENSOR ans = apply<Environment>(result, sig); 
     std::cout << ans << "\n\n";
 
     std::cout << sig << "\n\n";
