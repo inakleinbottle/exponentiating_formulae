@@ -14,6 +14,8 @@ struct Environment {
     using scalar_field = coefficients::rational_field;
     using S = typename scalar_field::S;
 
+    static constexpr DEG WIDTH = WIDTH;
+    static constexpr DEG DEPTH = DEPTH;
     static constexpr DEG poly_width = hall_basis<WIDTH, DEPTH>::start_of_degree(DEPTH + 1);
 
     using poly_t = alg::poly<scalar_field>;
