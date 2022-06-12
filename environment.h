@@ -1,13 +1,15 @@
 #pragma once
 
+#include <string>
 #include <iostream>
 #include <functional>
+#include <sstream>
 
 #include <libalgebra/libalgebra.h>
 
 using namespace alg;
 
-constexpr DEG WIDTH = 2;
+constexpr DEG WIDTH = 3;
 constexpr DEG DEPTH = 3; // For testing, to keep things small enough to run at home
 
 
@@ -28,8 +30,8 @@ struct Environment {
 	using TENSOR = alg::free_tensor<poly_coeffs, WIDTH, DEPTH, vectors::dense_vector>;
 	using tensor_basis_t = alg::tensor_basis<WIDTH, DEPTH>;
 	tensor_basis_t tbasis;
-
-	using SHUFFLE_TENSOR = alg::shuffle_tensor<scalar_field, WIDTH, DEPTH>;
+	//using SHUFFLE_TENSOR = alg::shuffle_tensor<scalar_field, WIDTH, DEPTH>;
+	using SHUFFLE_TENSOR = alg::shuffle_tensor<poly_coeffs, WIDTH, DEPTH>;
 	using shuffle_tensor_basis_t = alg::tensor_basis<WIDTH, DEPTH>;
 	shuffle_tensor_basis_t sbasis;
 
@@ -61,5 +63,31 @@ struct Environment {
 		inner_product f(sig_data);//todo: left and right switched here?
 		return f(functional_p);
 	}
+
+	template<class VECTOR, const int offset0 = 0>
+    VECTOR generic_vector(const int offset = offset0)
+    {
+        typename VECTOR::BASIS& basis = VECTOR::basis;
+		// LIE basis starts at 1 which is confusing
+        int count = (std::is_integral<decltype(basis.begin())>::value) ? basis.begin() : 0;
+
+		std::map < int, std::pair<typename VECTOR::KEY, std::string> > legend;
+
+        VECTOR result;
+        //for range type for loop approach use ": basis.iterate_keys()"
+        for (auto key = basis.begin(), end = basis.end(); key != end; key = basis.nextkey(key)) 
+		{
+            result[key]= poly_t(count + offset, 1);
+
+            auto basis_key_pair = std::pair<typename VECTOR::BASIS*, typename VECTOR::KEY>(&VECTOR::basis, key);
+            std::stringstream buffer;
+            buffer << basis_key_pair;
+            legend[count + offset] = std::pair(key, buffer.str());
+            std::cout << count + offset << " " << key << " " << buffer.str() << "\n";
+
+            ++count;
+        }
+        return result;
+    }
 };
 
