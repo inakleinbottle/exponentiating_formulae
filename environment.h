@@ -67,11 +67,19 @@ struct Environment {
 
     // creates a generic vector with monomial coefficients
     template<class VECTOR, const int offset0 = 0>
-    VECTOR generic_vector(const int offset = offset0)
+    static VECTOR generic_vector(const int offset = offset0)
     {
         const typename VECTOR::BASIS& basis = VECTOR::basis;
         // LIE basis starts at 1 which is confusing
-        int count = (std::is_integral<decltype(basis.begin())>::value) ? basis.begin() : 0;
+
+        int count;
+        if constexpr (std::is_integral<decltype(basis.begin())>::value) {
+            // invalid code if the premise is false - constexpr essential to avoid compilation
+            count = basis.begin();
+        }
+        else {
+            count = 0;
+        }
 
         std::map<int, std::pair<typename VECTOR::KEY, std::string>> legend;
 
