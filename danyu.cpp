@@ -124,7 +124,7 @@ int danyu()
 
     Environment env;
     const auto& sbasis = env.sbasis;
-    LIE logsig_before = env.generic_vector<typename Environment::LIE>(100);
+    LIE logsig_before = env.generic_vector<typename Environment::LIE, 2>(100);
 
     //    LIE logsig_before = env.generic_lie(100);
     TENSOR tensor_logsig_before = env.maps_.l2t(logsig_before);

@@ -2,16 +2,18 @@
 #include <array>
 
 constexpr DEG WIDTHIN = 3;
-constexpr DEG DEPTHIN = 3;
+constexpr DEG DEPTHIN = 4;
 
-constexpr DEG WIDTHOUT = 3;
-constexpr DEG DEPTHOUT = 3;
+constexpr DEG WIDTHOUT = 2;
+constexpr DEG DEPTHOUT = 1;
+
+constexpr DEG INOUTDEPTH = 2;
 
 using IN = Environment<WIDTHIN,DEPTHIN>;
 using OUT = Environment<WIDTHOUT,DEPTHOUT>;
 
-template<class EnvironmentIN,class EnvironmentOUT>
-typename EnvironmentOUT::TENSOR apply(const std::map<typename EnvironmentOUT::TENSOR::BASIS::KEY, typename EnvironmentIN::SHUFFLE_TENSOR>& result, const typename EnvironmentIN::TENSOR& in)
+template<class EnvironmentOUT,class EnvironmentIN>
+typename EnvironmentOUT::TENSOR apply1(const std::map<typename EnvironmentOUT::TENSOR::BASIS::KEY, typename EnvironmentIN::SHUFFLE_TENSOR>& result, const typename EnvironmentIN::TENSOR& in)
 {
     typename EnvironmentOUT::TENSOR out;
     for (const auto& x : result) {
@@ -40,19 +42,35 @@ int forward_transformer()
     IN::TENSOR tensor_logsig_during = in.maps_.l2t(logsig_during);
     IN::TENSOR sig_during = exp(tensor_logsig_during);
 
-    IN::LIE logsig_after = in.generic_lie(300);
+    IN::LIE logsig_after;// = in.generic_lie(300);
     IN::TENSOR tensor_logsig_after = in.maps_.l2t(logsig_after);
     IN::TENSOR sig_after = exp(tensor_logsig_after);
 
     IN::TENSOR sig = sig_before * sig_during * sig_after;
-    // IN::TENSOR sig = antipode(sig_before * sig_during * sig_after) * sig_before * sig_during * sig_after;
-
     IN::TENSOR tensor_logsig = log(sig);
     IN::LIE logsig = in.maps_.t2l(tensor_logsig);
+    std::cout << "logsig:\n" << logsig << "\n\n";
+
+    IN::TENSOR testgrouplike = antipode(sig_before * sig_during * sig_after) * sig_before * sig_during * sig_after;
+    std::cout << "Sig:\n" << testgrouplike << "\n\n";
 
     OUT out;
     
-    IN::SHUFFLE_TENSOR v_basic_shuffles[OUT::WIDTH]{IN::SHUFFLE_TENSOR(1, IN::poly_t(IN::S(1))), IN::SHUFFLE_TENSOR(2, IN::poly_t(IN::S(1))), IN::SHUFFLE_TENSOR(3, IN::poly_t(IN::S(1)))};
+    //IN::SHUFFLE_TENSOR v_basic_shuffles[OUT::WIDTH]{IN::SHUFFLE_TENSOR(1, IN::poly_t(IN::S(1))), IN::SHUFFLE_TENSOR(2, IN::poly_t(IN::S(1))), IN::SHUFFLE_TENSOR(3, IN::poly_t(IN::S(1)))};
+
+    IN::SHUFFLE_TENSOR g_basic_shuffles[OUT::WIDTH];
+    {
+        const DEG in_shuffle_tensor_width = alg::tensor_basis<IN::WIDTH, IN::DEPTH>::start_of_degree(IN::DEPTH + 1) - alg::tensor_basis<IN::WIDTH, IN::DEPTH>::start_of_degree(0);
+        int count = 0;
+        for (auto& sh : g_basic_shuffles) {
+            sh = IN::generic_vector<IN::SHUFFLE_TENSOR>(count);
+            for (auto key = in.tbasis.begin(); key != in.tbasis.end(); key = in.tbasis.nextkey(key))
+                if (key.size() > 2) 
+                    sh[key] -= sh[key];
+            count += in_shuffle_tensor_width;
+        }
+        std::cout << "Created " << count << " generic shuffle weight polynomials \n";
+    }
 
     std::map<OUT::TENSOR::BASIS::KEY, IN::SHUFFLE_TENSOR> result;
     auto& out_tbasis = out.tbasis;
@@ -63,7 +81,7 @@ int forward_transformer()
         tkey = out_tbasis.nextkey(tkey);
 
         if (tkey != out_tbasis.end())
-            for (auto v_basic_shuffle : v_basic_shuffles) {
+            for (auto v_basic_shuffle : g_basic_shuffles) {
                 result[tkey] = v_basic_shuffle;
                 tkey = out_tbasis.nextkey(tkey);
             }
@@ -77,12 +95,12 @@ int forward_transformer()
 
     std::cout << "\n\nBasic tests:\n ";
 
-    for (auto& u : result) std::cout << IN::SHUFFLE_TENSOR(u.first, IN::poly_t(IN::S(1))) << " " << u.second << "\n";
-    std::cout << "Basic tests finished\n\n";
-    OUT::TENSOR ans = apply<OUT,IN>(result, sig);
-    std::cout << ans << "\n\n";
+    //for (auto& u : result) std::cout << IN::SHUFFLE_TENSOR(u.first, IN::poly_t(IN::S(1))) << " " << u.second << "\n";
+    //std::cout << "Basic tests finished\n\n";
+    OUT::TENSOR ans = apply1<OUT,IN>(result, sig);
+    std::cout << ans * antipode(ans) << "\n\n";
 
-    std::cout << sig << "\n\n";
+    std::cout <<out.maps_.t2l(log(ans)) << "\n\n";
 
     return 0;
 }
