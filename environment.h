@@ -22,17 +22,34 @@ struct Environment {
     using poly_coeffs = coefficients::coefficient_ring<poly_t, typename scalar_field::Q>;
     static_assert(std::is_same<poly_coeffs::S, poly_t>::value, "the trait class of a coefficient ring must report the type of the coefficients");
 
-    using LIE = alg::lie<poly_coeffs, WIDTH, DEPTH, vectors::dense_vector>;
-    using lie_basis_t = lie_basis<WIDTH, DEPTH>;
+    template<DEG DEPTH>
+    using LIE_ = alg::lie<poly_coeffs, WIDTH, DEPTH, vectors::dense_vector>;
+    using LIE = LIE_<DEPTH>;
+
+    template<DEG DEPTH>
+    using lie_basis_t_ = lie_basis<WIDTH, DEPTH>;
+
+    using lie_basis_t = lie_basis_t_<WIDTH>;
     lie_basis_t lbasis;
 
-    using TENSOR = alg::free_tensor<poly_coeffs, WIDTH, DEPTH, vectors::dense_vector>;
-    using tensor_basis_t = alg::tensor_basis<WIDTH, DEPTH>;
+    template<DEG DEPTH>
+    using TENSOR_ = alg::free_tensor<poly_coeffs, WIDTH, DEPTH, vectors::dense_vector>;
+    using TENSOR = TENSOR_<DEPTH>;
+
+    template<DEG DEPTH>
+    using tensor_basis_t_ = alg::tensor_basis<WIDTH, DEPTH>;
+
+    using tensor_basis_t = tensor_basis_t_< DEPTH>;
     tensor_basis_t tbasis;
 
     //using SHUFFLE_TENSOR = alg::shuffle_tensor<scalar_field, WIDTH, DEPTH>;
-    using SHUFFLE_TENSOR = alg::shuffle_tensor<poly_coeffs, WIDTH, DEPTH>;
-    using shuffle_tensor_basis_t = alg::tensor_basis<WIDTH, DEPTH>;
+    template<DEG DEPTH>
+    using SHUFFLE_TENSOR_ = alg::shuffle_tensor<poly_coeffs, WIDTH, DEPTH>;
+    using SHUFFLE_TENSOR = SHUFFLE_TENSOR_<DEPTH>;
+    
+    template<DEG DEPTH>
+    using shuffle_tensor_basis_t_ = alg::tensor_basis<WIDTH, DEPTH>;
+    using shuffle_tensor_basis_t = shuffle_tensor_basis_t_<DEPTH>;
     shuffle_tensor_basis_t sbasis;
 
     using SHUFFLE_TENSOR_OVER_POLYS = alg::shuffle_tensor<poly_coeffs, WIDTH, DEPTH>;
