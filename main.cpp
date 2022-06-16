@@ -3,6 +3,7 @@ int forward_transformer();
 int cbh_formula();
 int danyu();
 int oldmain();
+int test();
 
 int main()
 {
@@ -10,4 +11,5 @@ int main()
     //cbh_formula();
     //danyu();
     forward_transformer();
+    //test();
 }

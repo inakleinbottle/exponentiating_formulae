@@ -116,4 +116,31 @@ struct Environment {
         }
         return result;
     }
+
 };
+
+template<class FULL_TENSOR, class SHORT_TENSOR>
+FULL_TENSOR& add_equals_short(FULL_TENSOR& out, const SHORT_TENSOR& in)
+{
+    const static typename FULL_TENSOR::BASIS fbasis;
+    const static typename SHORT_TENSOR::BASIS sbasis;
+    auto key = sbasis.begin(), end = sbasis.end();
+    auto fkey = fbasis.begin(), fend = fbasis.end();
+    for (; key != end && fkey != fend; key = sbasis.nextkey(key), fkey = fbasis.nextkey(fkey))
+        out[fkey] += in[key];
+    return out;
+}
+
+template<class EnvironmentOUT, class EnvironmentIN>
+typename EnvironmentOUT::TENSOR apply1(const std::map<typename EnvironmentOUT::TENSOR::BASIS::KEY, typename EnvironmentIN::SHUFFLE_TENSOR>& result, const typename EnvironmentIN::TENSOR& in)
+{
+    typename EnvironmentOUT::TENSOR out;
+    for (const auto& x : result) {
+        auto& key = x.first;
+        auto& tvalue = x.second;
+        // both environments must have compatible scalar types
+        out[key] = typename EnvironmentIN::K(tvalue, in);
+    };
+
+    return out;
+}

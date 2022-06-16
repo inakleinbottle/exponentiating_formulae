@@ -22,42 +22,19 @@ using SHORT_LIE = IN::LIE_<DEPTHOUT>;
 // limiting the degree of nonlinearity in the functions on paths
 using SHORT_SHUFFLE = IN::SHUFFLE_TENSOR_<INOUTDEPTH>;
 
-int forward_transformer()
+int test()
 {
     auto k = IN::K;
 
     IN in;
     const auto& sbasis = in.sbasis;
-    IN::LIE logsig_before;
-    add_equals_short(logsig_before, in.generic_vector<SHORT_LIE>(1000));
-    SHOW(logsig_before);
-    IN::TENSOR tensor_logsig_before = in.maps_.l2t(logsig_before);
-    IN::TENSOR sig_before = exp(tensor_logsig_before);
-    SHOW(sig_before);
-
-    IN::LIE logsig_during;
-    add_equals_short(logsig_during, in.generic_vector<SHORT_LIE>(2000));
-    SHOW(logsig_during);
-    IN::TENSOR tensor_logsig_during = in.maps_.l2t(logsig_during);
-    IN::TENSOR sig_during = exp(tensor_logsig_during);
-    SHOW(sig_during);
-
-    IN::LIE logsig_after;
-    add_equals_short(logsig_after, in.generic_vector<SHORT_LIE>(3000));
-    SHOW(logsig_after);
-    IN::TENSOR tensor_logsig_after = in.maps_.l2t(logsig_after);
-    IN::TENSOR sig_after = exp(tensor_logsig_after);
-    SHOW(sig_after);
-
-    IN::TENSOR sig = sig_before * sig_during * sig_after;
-    SHOW(sig);
-    IN::TENSOR tensor_logsig = log(sig);
-    IN::LIE logsig = in.maps_.t2l(tensor_logsig);
-    //std::cout << "logsig:\n" << logsig << "\n\n";
+    IN::LIE logsig;
+    add_equals_short(logsig, SHOW(in.generic_vector<SHORT_LIE>(1000)));
     SHOW(logsig);
+    IN::TENSOR sig = exp(in.maps_.l2t(logsig));
+    SHOW(sig);
+    SHOW(antipode(sig)*sig);
 
-    IN::TENSOR testgrouplike = antipode(sig) * sig;
-    SHOW(testgrouplike);
 
     OUT out;
 
@@ -75,10 +52,11 @@ int forward_transformer()
         }
         std::cout << "Created " << count << " generic shuffle weight polynomials \n";
     }
-    // now populate the tensor over the vector of shuffle coordinates
-    // to get the signature of the OUT path (a grouplike element).
-
+     // now populate the tensor over the vector of shuffle coordinates
+     // to get the signature of the OUT path (a grouplike element).
+    
     std::map<OUT::TENSOR::BASIS::KEY, IN::SHUFFLE_TENSOR> result;
+     
 
     const OUT::TENSOR::BASIS obasis;
     auto& obegin = obasis.begin();
@@ -101,9 +79,9 @@ int forward_transformer()
             basic_shuffle[ibegin] -= basic_shuffle[ibegin];
             result[tkey] = basic_shuffle;
             tkey = obasis.nextkey(tkey);
-        }
+        }      
     }
-    for (; tkey != oend; tkey = obasis.nextkey(tkey)) {
+        for (  ; tkey != oend; tkey = obasis.nextkey(tkey)) {
         auto letter = tkey.lparent();// first letter of key as a key
         auto rest = tkey.rparent();  // remainder of key as a key
         result[tkey] = half_shuffle_multiply(result[letter], result[rest]);
@@ -111,16 +89,6 @@ int forward_transformer()
 
     OUT::TENSOR ans = apply1<OUT, IN>(result, sig);
     SHOW(antipode(ans) * ans);
-
-    OUT::TENSOR ans_before_during = apply1<OUT, IN>(result, sig_before * sig_during);
-    SHOW(antipode(ans_before_during) * ans_before_during);
-
-    OUT::TENSOR ans_before = apply1<OUT, IN>(result, sig_before);
-    SHOW(antipode(ans_before) * ans_before);
-    OUT::TENSOR ans_during = antipode(ans_before) * ans_before_during;
-    SHOW(antipode(ans_during) * ans_during);
-
-    std::cout <<out.maps_.t2l(log(ans_during)) << "\n\n";
 
     return 0;
 }
