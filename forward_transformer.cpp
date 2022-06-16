@@ -42,32 +42,29 @@ int forward_transformer()
     IN::TENSOR sig_during = exp(tensor_logsig_during);
     SHOW(sig_during);
 
-    IN::LIE logsig_after;
-    add_equals_short(logsig_after, in.generic_vector<SHORT_LIE>(3000));
-    SHOW(logsig_after);
-    IN::TENSOR tensor_logsig_after = in.maps_.l2t(logsig_after);
-    IN::TENSOR sig_after = exp(tensor_logsig_after);
-    SHOW(sig_after);
+    //IN::LIE logsig_after;
+    //add_equals_short(logsig_after, in.generic_vector<SHORT_LIE>(3000));
+    //SHOW(logsig_after);
+    //IN::TENSOR tensor_logsig_after = in.maps_.l2t(logsig_after);
+    //IN::TENSOR sig_after = exp(tensor_logsig_after);
+    //SHOW(sig_after);
 
-    IN::TENSOR sig = sig_before * sig_during * sig_after;
+    IN::TENSOR sig = sig_before * sig_during;// *sig_after;
     SHOW(sig);
+    SHOW(antipode(sig) * sig);
     IN::TENSOR tensor_logsig = log(sig);
     IN::LIE logsig = in.maps_.t2l(tensor_logsig);
-    //std::cout << "logsig:\n" << logsig << "\n\n";
     SHOW(logsig);
-
-    IN::TENSOR testgrouplike = antipode(sig) * sig;
-    SHOW(testgrouplike);
 
     OUT out;
 
-    IN::SHUFFLE_TENSOR g_basic_shuffles[OUT::WIDTH];
+    IN::SHUFFLE_TENSOR generic_basic_shuffles[OUT::WIDTH];
     const DEG in_shuffle_tensor_width = SHORT_SHUFFLE::BASIS::start_of_degree(INOUTDEPTH + 1) - SHORT_SHUFFLE::BASIS::start_of_degree(0);
 
     // now populate a vector of shuffles that gives the OUT path
     {
         int count = 0;
-        for (auto& sh : g_basic_shuffles) {
+        for (auto& sh : generic_basic_shuffles) {
             SHOW(count);
             add_equals_short(sh, in.generic_vector<SHORT_SHUFFLE>(count));
             count += in_shuffle_tensor_width;
@@ -97,7 +94,7 @@ int forward_transformer()
 
     // the increment of the path (so constant terms get set to zero!!!)
     if (tkey != oend) {
-        for (auto basic_shuffle : g_basic_shuffles) {
+        for (auto basic_shuffle : generic_basic_shuffles) {
             basic_shuffle[ibegin] -= basic_shuffle[ibegin];
             result[tkey] = basic_shuffle;
             tkey = obasis.nextkey(tkey);
