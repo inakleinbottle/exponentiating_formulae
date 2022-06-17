@@ -1,7 +1,7 @@
 #include "SHOW.h"
 #include "environment.h"
 // the receiving environment
-constexpr DEG WIDTHOUT = 2;
+constexpr DEG WIDTHOUT = 4;
 constexpr DEG DEPTHOUT = 2;
 
 // the depth of the shuffles producing the channels
@@ -9,7 +9,7 @@ constexpr DEG INOUTDEPTH = 2;
 
 // the incoming stream with enough accuracy to determine the
 // required integrals of the projections
-constexpr DEG WIDTHIN = 2;
+constexpr DEG WIDTHIN = 3;
 constexpr DEG DEPTHIN = (DEPTHOUT * INOUTDEPTH);
 
 // the input and output environments
@@ -28,6 +28,8 @@ int forward_transformer()
 
     IN in;
     const auto& sbasis = in.sbasis;
+
+    std::cout << "Creating the two generic input log signatures \"before\" and \"during\" truncated to level " << DEPTHIN << "\n\n";
     IN::LIE logsig_before;
     add_equals_short(logsig_before, in.generic_vector<SHORT_LIE>(1000));
     SHOW(logsig_before);
@@ -49,6 +51,7 @@ int forward_transformer()
     //IN::TENSOR sig_after = exp(tensor_logsig_after);
     //SHOW(sig_after);
 
+    std::cout << "Concatenating \"before\" and \"during\" to form \"logsig\" and \"sig\" truncated to level " << INOUTDEPTH << "\n\n";
     IN::TENSOR sig = sig_before * sig_during;// *sig_after;
     SHOW(sig);
     SHOW(antipode(sig) * sig);
@@ -62,6 +65,7 @@ int forward_transformer()
     const DEG in_shuffle_tensor_width = SHORT_SHUFFLE::BASIS::start_of_degree(INOUTDEPTH + 1) - SHORT_SHUFFLE::BASIS::start_of_degree(0);
 
     // now populate a vector of shuffles that gives the OUT path
+    std::cout << "Creating the weights: " << OUT::WIDTH << " generic truncated input shuffles truncated to level " << INOUTDEPTH << "\n\n";
     {
         int count = 0;
         for (auto& sh : generic_basic_shuffles) {
