@@ -1,7 +1,7 @@
 #include "SHOW.h"
 #include "environment.h"
 // the receiving environment
-constexpr DEG WIDTHOUT = 4;
+constexpr DEG WIDTHOUT = 3;
 constexpr DEG DEPTHOUT = 2;
 
 // the depth of the shuffles producing the channels
@@ -9,7 +9,7 @@ constexpr DEG INOUTDEPTH = 2;
 
 // the incoming stream with enough accuracy to determine the
 // required integrals of the projections
-constexpr DEG WIDTHIN = 3;
+constexpr DEG WIDTHIN = 2;
 constexpr DEG DEPTHIN = (DEPTHOUT * INOUTDEPTH);
 
 // the input and output environments
@@ -51,7 +51,7 @@ int forward_transformer()
     //IN::TENSOR sig_after = exp(tensor_logsig_after);
     //SHOW(sig_after);
 
-    std::cout << "Concatenating \"before\" and \"during\" to form \"logsig\" and \"sig\" truncated to level " << INOUTDEPTH << "\n\n";
+    std::cout << "Concatenating \"before\" and \"during\" to form \"sig\" and then \"logsig\" truncated to level " << INOUTDEPTH << "\n\n";
     IN::TENSOR sig = sig_before * sig_during;// *sig_after;
     SHOW(sig);
     SHOW(antipode(sig) * sig);

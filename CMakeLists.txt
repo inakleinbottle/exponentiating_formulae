@@ -9,9 +9,10 @@ add_subdirectory(libalgebra)
 add_executable(
   exponentiating_formulae
   main.cpp
-  "cbh_formulae.cpp"
   "environment.h"
-  "danyu.cpp" "forward_transformer.cpp" "oldmain.cpp" "SHOW.h" "SHOW.h" "test.cpp")
+  "forward_transformer.cpp"
+  "SHOW.h")
+
 #target_include_directories(exponentiating_formulae PRIVATE headers)
 target_link_libraries(exponentiating_formulae PUBLIC Libalgebra::Libalgebra)
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT exponentiating_formulae)
